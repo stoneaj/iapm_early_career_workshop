@@ -3,7 +3,7 @@
 % Alan Stone, TCD, 19/09/2019
 
 % directory of tutorial toolbox
-tutorial_directory = '/Users/astone/albin/iapm_early_career_workshop';
+tutorial_directory = '/Users/astone/albin/iapm_early_career_workshop'; % NOTE: Change this to directory on your machine
 
 % add nifti toolbox to path
 addpath(genpath([tutorial_directory filesep 'downloads' filesep 'NIfTI_20140122']))

@@ -1,5 +1,4 @@
-% demonstration of diffusion weighted imaging analysis for IAPM Early Careers Workshop 2019
-% example data is publically available from https://www.fmrib.ox.ac.uk/primers/intro_primer/ExBox2/IntroBox2.html
+% demonstration of Arterial Spin Labelling analysis for IAPM Early Careers Workshop 2019
 % Alan Stone, TCD, 19/09/2019
 
 % directory of tutorial toolbox
@@ -60,11 +59,11 @@ resnorm = zeros(size(dS_asl(:,:,:,1)));
 %residual = zeros(x,y,z);
 
 [x,y,z] = size(dS_asl(:,:,:,1));
-fprintf('GO MAKE A CUP OF TEA THIS WILL TAKE A FEW MINS !!! \n')
+
 tic
 for xID = 1:x
     for yID = 1:y
-        for zID = z/2%1:z
+        for zID = 1:z %1:z
 
             fprintf(1,'%.0f,%.0f,%.0f \n' ,xID,yID,zID);
             input.PLD = PLD + (slice_timing_gap * (zID-1)) + input.tau; %inversion time
@@ -143,6 +142,14 @@ for id = 1:3:18
     countA = countA + 1;
 end
 
+% make mask
+mdS_asl = mean(dS_asl,4);
+mask = mdS_asl(:,:,:,1) > 1; % crude brain mask
+figure, imshow(mask(:,:,end/2),'displayrange',[])
+
+CBF = CBF .* mask;
+AAT = AAT .* mask;
+
 % view CBF & AAT map
 figure('name','CBF & AAT','NumberTitle','off'), set(gcf,'color','w'), hold on % set figure name & other settings
 c1 = subplot(2,3,1); imshow(CBF(:,:,end/2), 'displayrange', [0 100]), colormap(c1, 'Jet')
@@ -152,9 +159,9 @@ hold on, title('CBF - Coronal'), c = colorbar; c.Label.String = '[ml/100g/min]';
 c3 = subplot(2,3,3); imshow(imrotate(squeeze(CBF(end/2,:,:)),90), 'displayrange', [0 100]), colormap(c3, 'Jet')
 hold on, title('CBF - Sagittal'), c = colorbar; c.Label.String = '[ml/100g/min]';
 
-c1 = subplot(2,3,1); imshow(AAT(:,:,end/2), 'displayrange', [0 3]), colormap(c1, 'Jet')
-hold on, title('AAT - Axial'), c = colorbar; c.Label.String = '[ml/100g/min]';
-c2 = subplot(2,3,2); imshow(imrotate(squeeze(AAT(:,end/2,:)),90), 'displayrange', [0 3]), colormap(c2, 'Jet')
-hold on, title('AAT - Coronal'), c = colorbar; c.Label.String = '[ml/100g/min]';
-c3 = subplot(2,3,3); imshow(imrotate(squeeze(AAT(end/2,:,:)),90), 'displayrange', [0 3]), colormap(c3, 'Jet')
-hold on, title('AAT - Sagittal'), c = colorbar; c.Label.String = '[ml/100g/min]';
+c1 = subplot(2,3,4); imshow(AAT(:,:,end/2), 'displayrange', [0 3]), colormap(c1, 'Jet')
+hold on, title('AAT - Axial'), c = colorbar; c.Label.String = '[s]';
+c2 = subplot(2,3,5); imshow(imrotate(squeeze(AAT(:,end/2,:)),90), 'displayrange', [0 3]), colormap(c2, 'Jet')
+hold on, title('AAT - Coronal'), c = colorbar; c.Label.String = '[s]';
+c3 = subplot(2,3,6); imshow(imrotate(squeeze(AAT(end/2,:,:)),90), 'displayrange', [0 3]), colormap(c3, 'Jet')
+hold on, title('AAT - Sagittal'), c = colorbar; c.Label.String = '[s]';
